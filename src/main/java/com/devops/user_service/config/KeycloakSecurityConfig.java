@@ -33,18 +33,10 @@ public class KeycloakSecurityConfig {
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final CustomJwtAuthenticationConverter customJwtAuthenticationConverter;
 
-
     @Bean
     public HttpSessionEventPublisher httpSessionEventPublisher() {
         return new HttpSessionEventPublisher();
     }
-
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) {
-//        KeycloakAuthenticationProvider keycloakAuthenticationProvider = new KeycloakAuthenticationProvider();
-//        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new KeycloakRolesMapper());
-//        auth.authenticationProvider(keycloakAuthenticationProvider);
-//    }
 
     @Bean
     public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
@@ -64,8 +56,7 @@ public class KeycloakSecurityConfig {
                 .exceptionHandling(eh -> eh.authenticationEntryPoint(restAuthenticationEntryPoint))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/hosts/**").hasRole("HOST")
-                        .requestMatchers("/guests/**").hasRole("GUEST")
+                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

@@ -9,13 +9,13 @@ import java.util.*;
 
 @Component
 public class KeycloakRolesMapper {
-    private static final String REALM_ACCESS_CLAIM = "resource_access";
-    private static final String CLIENT_NAME = "spring-boot-client";
+    private static final String REALM_ACCESS_CLAIM = "realm_access";
+    private static final String ROLES_CLAIM = "roles";
 
 
     public Collection<GrantedAuthority> mapAuthorities(Jwt jwt) {
         Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-        String rolesStr = jwt.getClaimAsMap(REALM_ACCESS_CLAIM).get(CLIENT_NAME).toString();
+        String rolesStr = jwt.getClaimAsMap(REALM_ACCESS_CLAIM).get(ROLES_CLAIM).toString();
         int firstIndexOfBracket = rolesStr.indexOf("[");
         int lastIndexOfBracket = rolesStr.lastIndexOf("]");
         String role = rolesStr.substring(firstIndexOfBracket + 1, lastIndexOfBracket);
