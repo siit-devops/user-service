@@ -18,6 +18,9 @@ public class CreateUserRequest {
     @NotNull
     String password;
 
+    @NotNull
+    String username;
+    
     @Email
     @NotNull
     String email;
