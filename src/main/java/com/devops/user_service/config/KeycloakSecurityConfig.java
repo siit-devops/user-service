@@ -1,9 +1,6 @@
 package com.devops.user_service.config;
 
 import lombok.RequiredArgsConstructor;
-import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
-import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -25,7 +22,6 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
-@KeycloakConfiguration
 @EnableGlobalAuthentication
 @RequiredArgsConstructor
 public class KeycloakSecurityConfig {
@@ -41,12 +37,6 @@ public class KeycloakSecurityConfig {
     @Bean
     public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
         return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public KeycloakSpringBootProperties KeycloakSpringBootProperties() {
-        return new KeycloakSpringBootProperties();
     }
 
     @Bean
