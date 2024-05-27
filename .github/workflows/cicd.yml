@@ -35,6 +35,19 @@ jobs:
           postgresql db: 'usersdb'
           postgresql user: 'postgres'
           postgresql password: 'password'
+          
+      - name: Start Keycloak
+        run: |
+          docker run -d --name keycloak -p 18080:8080 \
+          -e KEYCLOAK_USER=admin \
+          -e KEYCLOAK_PASSWORD=admin \
+          -e DB_VENDOR=h2 \
+          -v ${{ github.workspace }}/realm-export.json:/opt/keycloak/data/import/realm-export.json \
+          quay.io/keycloak/keycloak:15.0.2 start-dev --import-realm
+
+      - name: Wait for services to be ready
+        run: sleep 60
+                
 
       # Set up JDK 17
       - name: Set up JDK
