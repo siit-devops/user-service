@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.util.UUID;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -20,7 +21,7 @@ public class CreateUserRequest {
 
     @NotNull
     String username;
-    
+
     @Email
     @NotNull
     String email;
