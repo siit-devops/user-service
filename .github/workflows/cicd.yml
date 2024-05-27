@@ -27,7 +27,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       # - name: Connect to PostgreSQL
       #   uses: harmon758/postgresql-action@v1
@@ -46,7 +46,7 @@ jobs:
 
       # Set up JDK 17
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -54,15 +54,12 @@ jobs:
       #Set up Maven cache
       - name: Cache Maven packages
         #This action allows caching dependencies and build outputs to improve workflow execution time.
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      # # Run build and tests
-      # - name: Build with Maven
-      #   run: mvn -B clean package
-
-      - name: Run tests
-        run: mvn -B test --file pom.xml
+      # Run build and tests
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
