@@ -16,6 +16,8 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.UUID;
@@ -56,6 +58,27 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
         }
 
         return response;
+    }
+
+    @Override
+    public void updateUser(CreateUserRequest editUserRequest) {
+        UserRepresentation user = new UserRepresentation();
+        user.setUsername(editUserRequest.getUsername());
+        user.setFirstName(editUserRequest.getFirstname());
+        user.setLastName(editUserRequest.getLastname());
+        user.setEmail(editUserRequest.getEmail());
+
+        if (editUserRequest.getPassword() != null) {
+            CredentialRepresentation credential = createPasswordCredentials(editUserRequest.getPassword());
+            user.setCredentials(Collections.singletonList(credential));
+        }
+
+        UsersResource usersResource = kcProvider.getInstance().realm(realm).users();
+        try {
+            usersResource.get(editUserRequest.getId().toString()).update(user);
+        } catch (ClientErrorException ex) {
+            throw new BadRequestException(ex.getMessage());
+        }
     }
 
     private void addRoleToUser(String userId, String role, UsersResource usersResource) {

@@ -15,11 +15,16 @@ public class KeycloakRolesMapper {
 
     public Collection<GrantedAuthority> mapAuthorities(Jwt jwt) {
         Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-        String rolesStr = jwt.getClaimAsMap(REALM_ACCESS_CLAIM).get(ROLES_CLAIM).toString();
-        int firstIndexOfBracket = rolesStr.indexOf("[");
-        int lastIndexOfBracket = rolesStr.lastIndexOf("]");
-        String role = rolesStr.substring(firstIndexOfBracket + 1, lastIndexOfBracket);
-        mappedAuthorities.add(new SimpleGrantedAuthority(role));
-        return mappedAuthorities;
+        try {
+            String rolesStr = jwt.getClaimAsMap(REALM_ACCESS_CLAIM).get(ROLES_CLAIM).toString();
+            int firstIndexOfBracket = rolesStr.indexOf("[");
+            int lastIndexOfBracket = rolesStr.lastIndexOf("]");
+            String role = rolesStr.substring(firstIndexOfBracket + 1, lastIndexOfBracket);
+            mappedAuthorities.add(new SimpleGrantedAuthority(role));
+
+            return mappedAuthorities;
+        } catch (NullPointerException e) {
+            return new HashSet<>();
+        }
     }
 }
