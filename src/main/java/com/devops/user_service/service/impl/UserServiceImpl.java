@@ -45,4 +45,16 @@ public class UserServiceImpl implements UserService {
         keycloakService.changePassword(id, changePasswordRequest);
     }
 
+    @Override
+    public void deleteUser(String id) {
+        // todo:
+        //  in reservation service:
+        //  - check if guest or host have any reservations in future
+        //  in accommodation service:
+        //  - delete all host's accommodations
+
+        keycloakService.deleteUser(id);
+        userRepository.deleteById(UUID.fromString(id));
+    }
+
 }

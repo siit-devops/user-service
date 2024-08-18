@@ -15,4 +15,6 @@ public interface KeycloakAdminClientService {
     void updateUser(EditUserRequest editUserRequest);
 
     void changePassword(String id, ChangePasswordRequest changePasswordRequest);
+
+    void deleteUser(String id);
 }

@@ -10,4 +10,6 @@ public interface UserService {
     void updateUser(UUID id, EditUserRequest editUserRequest);
 
     void changePassword(String id, ChangePasswordRequest changePasswordRequest);
+
+    void deleteUser(String id);
 }
