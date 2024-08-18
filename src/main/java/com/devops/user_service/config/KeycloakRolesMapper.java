@@ -17,9 +17,7 @@ public class KeycloakRolesMapper {
         Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
         try {
             String rolesStr = jwt.getClaimAsMap(REALM_ACCESS_CLAIM).get(ROLES_CLAIM).toString();
-            int firstIndexOfBracket = rolesStr.indexOf("[");
-            int lastIndexOfBracket = rolesStr.lastIndexOf("]");
-            String role = rolesStr.substring(firstIndexOfBracket + 1, lastIndexOfBracket);
+            String role = rolesStr.substring(rolesStr.indexOf("[") + 1, rolesStr.lastIndexOf("]"));
             mappedAuthorities.add(new SimpleGrantedAuthority(role));
 
             return mappedAuthorities;

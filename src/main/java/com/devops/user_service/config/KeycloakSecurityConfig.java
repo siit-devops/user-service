@@ -49,6 +49,7 @@ public class KeycloakSecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/users").hasAnyRole("GUEST", "HOST")
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

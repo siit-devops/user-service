@@ -1,7 +1,10 @@
 package com.devops.user_service.service.impl;
 
 import com.devops.user_service.config.KeycloakProvider;
+import com.devops.user_service.dto.ChangePasswordRequest;
 import com.devops.user_service.dto.CreateUserRequest;
+import com.devops.user_service.dto.EditUserRequest;
+import com.devops.user_service.exception.BadRequestException;
 import com.devops.user_service.mappers.MapStructMapper;
 import com.devops.user_service.repository.UserRepository;
 import com.devops.user_service.service.KeycloakAdminClientService;
@@ -10,16 +13,18 @@ import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.authorization.client.AuthzClient;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,6 +33,8 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
 
     @Value("${keycloak.realm}")
     public String realm;
+    AuthzClient authzClient = AuthzClient.create();
+
 
     private final KeycloakProvider kcProvider;
     private final MapStructMapper mapstructMapper;
@@ -61,17 +68,12 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
     }
 
     @Override
-    public void updateUser(CreateUserRequest editUserRequest) {
+    public void updateUser(EditUserRequest editUserRequest) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(editUserRequest.getUsername());
         user.setFirstName(editUserRequest.getFirstname());
         user.setLastName(editUserRequest.getLastname());
         user.setEmail(editUserRequest.getEmail());
-
-        if (editUserRequest.getPassword() != null) {
-            CredentialRepresentation credential = createPasswordCredentials(editUserRequest.getPassword());
-            user.setCredentials(Collections.singletonList(credential));
-        }
 
         UsersResource usersResource = kcProvider.getInstance().realm(realm).users();
         try {
@@ -81,11 +83,36 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
         }
     }
 
+    @Override
+    public void changePassword(String id, ChangePasswordRequest changePasswordRequest) {
+        UserResource user = kcProvider.getInstance().realm(realm).users().get(id);
+        var username = user.toRepresentation().getUsername();
+        validateOldPassword(username, changePasswordRequest.getOldPassword());
+        CredentialRepresentation credential = createPasswordCredentials(changePasswordRequest.getNewPassword());
+        user.resetPassword(credential);
+    }
+
+    private void validateOldPassword(String username, String oldPassword) {
+        try {
+            var response = authzClient.obtainAccessToken(username, oldPassword);
+        }
+        catch (Exception ex) {
+            throw new BadRequestException("Invalid old password");
+        }
+    }
+
     private void addRoleToUser(String userId, String role, UsersResource usersResource) {
         UserResource userResource = usersResource.get(userId);
         RolesResource rolesResource = kcProvider.getInstance().realm(realm).roles();
         RoleRepresentation roleRepresentation = rolesResource.get(role).toRepresentation();
         userResource.roles().realmLevel().add(Collections.singletonList(roleRepresentation));
+
+        var removingRoles = List.of(
+                rolesResource.get("default-roles-devops").toRepresentation(),
+                rolesResource.get("offline_access").toRepresentation(),
+                rolesResource.get("uma_authorization").toRepresentation()
+        );
+        userResource.roles().realmLevel().remove(removingRoles);
     }
 
     private CredentialRepresentation createPasswordCredentials(String password) {

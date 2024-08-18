@@ -1,6 +1,9 @@
 package com.devops.user_service.service.impl;
 
-import com.devops.user_service.dto.CreateUserRequest;
+import com.devops.user_service.dto.ChangePasswordRequest;
+import com.devops.user_service.dto.EditUserRequest;
+import com.devops.user_service.exception.BadRequestException;
+import com.devops.user_service.exception.NotFoundException;
 import com.devops.user_service.mappers.MapStructMapper;
 import com.devops.user_service.model.User;
 import com.devops.user_service.repository.UserRepository;
@@ -10,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.ws.rs.BadRequestException;
 import java.util.UUID;
 
 @Service
@@ -23,9 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(UUID id, CreateUserRequest editUserRequest) {
+    public void updateUser(UUID id, EditUserRequest editUserRequest) {
         User user = userRepository.findById(id).orElseThrow(
-                () -> new BadRequestException("User doesn't exist")
+                () -> new NotFoundException("User doesn't exist")
         );
 
         if (editUserRequest.getId().compareTo(user.getId()) != 0) {
@@ -33,9 +35,14 @@ public class UserServiceImpl implements UserService {
         }
 
         keycloakService.updateUser(editUserRequest);
-        user = mapper.createUserRequestToUser(editUserRequest);
+        user = mapper.editUserRequestToUser(editUserRequest);
 
         userRepository.save(user);
+    }
+
+    @Override
+    public void changePassword(String id, ChangePasswordRequest changePasswordRequest) {
+        keycloakService.changePassword(id, changePasswordRequest);
     }
 
 }
