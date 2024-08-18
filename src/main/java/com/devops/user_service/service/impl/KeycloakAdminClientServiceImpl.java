@@ -33,7 +33,6 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
 
     @Value("${keycloak.realm}")
     public String realm;
-    AuthzClient authzClient = AuthzClient.create();
 
 
     private final KeycloakProvider kcProvider;
@@ -93,6 +92,7 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
     }
 
     private void validateOldPassword(String username, String oldPassword) {
+        AuthzClient authzClient = AuthzClient.create();
         try {
             var response = authzClient.obtainAccessToken(username, oldPassword);
         }
