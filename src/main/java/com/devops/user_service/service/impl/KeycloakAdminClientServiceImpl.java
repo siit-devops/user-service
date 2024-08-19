@@ -111,7 +111,8 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
         AuthzClient authzClient = AuthzClient.create();
         try {
             var response = authzClient.obtainAccessToken(username, oldPassword);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new BadRequestException("Invalid old password");
         }
     }
