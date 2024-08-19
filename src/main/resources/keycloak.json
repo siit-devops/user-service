@@ -1,0 +1,8 @@
+{
+  "realm": "devops",
+  "auth-server-url" : "http://localhost:18080",
+  "resource" : "spring-boot-client",
+  "credentials": {
+    "secret": "MYjhOPlXuU7PAaeBuN8mXUNO5M2V6SWQ"
+  }
+}
