@@ -5,6 +5,8 @@ import com.devops.user_service.dto.ChangePasswordRequest;
 import com.devops.user_service.dto.CreateUserRequest;
 import com.devops.user_service.dto.EditUserRequest;
 import com.devops.user_service.exception.BadRequestException;
+import com.devops.user_service.exception.InternalServerException;
+import com.devops.user_service.exception.NotFoundException;
 import com.devops.user_service.mappers.MapStructMapper;
 import com.devops.user_service.repository.UserRepository;
 import com.devops.user_service.service.KeycloakAdminClientService;
@@ -14,7 +16,6 @@ import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.authorization.client.AuthzClient;
-import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -89,6 +90,20 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
         validateOldPassword(username, changePasswordRequest.getOldPassword());
         CredentialRepresentation credential = createPasswordCredentials(changePasswordRequest.getNewPassword());
         user.resetPassword(credential);
+    }
+
+    @Override
+    public void deleteUser(String id) {
+        UserResource user = kcProvider.getInstance().realm(realm).users().get(id);
+        try {
+            user.logout();
+            user.remove();
+        } catch (javax.ws.rs.NotFoundException ex) {
+            throw new NotFoundException("User not found");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new InternalServerException("Something went wrong while deleting the user");
+        }
     }
 
     private void validateOldPassword(String username, String oldPassword) {

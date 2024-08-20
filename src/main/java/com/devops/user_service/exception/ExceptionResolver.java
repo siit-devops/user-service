@@ -26,9 +26,16 @@ public class ExceptionResolver {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> badRequestException(NotFoundException exception) {
+    public ResponseEntity<?> notFoundException(NotFoundException exception) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InternalServerException.class)
+    public ResponseEntity<?> internalServerException(InternalServerException exception) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        return new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

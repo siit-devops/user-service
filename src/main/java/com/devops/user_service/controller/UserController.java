@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.UUID;
@@ -33,6 +30,12 @@ public class UserController {
     @PutMapping("/password")
     public ResponseEntity<?> changePassword(Principal principal, @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         userService.changePassword(principal.getName(), changePasswordRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<?> deleteUser(Principal principal) {
+        userService.deleteUser(principal.getName());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
