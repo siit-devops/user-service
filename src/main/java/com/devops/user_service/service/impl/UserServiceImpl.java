@@ -9,6 +9,7 @@ import com.devops.user_service.model.User;
 import com.devops.user_service.repository.UserRepository;
 import com.devops.user_service.service.KeycloakAdminClientService;
 import com.devops.user_service.service.UserService;
+import com.devops.user_service.service.feignClients.AccommodationClient;
 import com.devops.user_service.service.feignClients.ReservationClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final MapStructMapper mapper;
 
     private final ReservationClient reservationClient;
+    private final AccommodationClient accommodationClient;
 
     @Override
     @Transactional
@@ -54,11 +56,8 @@ public class UserServiceImpl implements UserService {
         if (activeReservations > 0) {
             throw new BadRequestException("Can't delete user that has active reservations");
         }
-        // todo:
-        //  in accommodation service:
-        //  - delete all host's accommodations
+        accommodationClient.deleteUsersAccommodation(id);
         keycloakService.deleteUser(id);
         userRepository.deleteById(UUID.fromString(id));
     }
-
 }

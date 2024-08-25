@@ -1,5 +1,6 @@
 package com.devops.user_service.exception;
 
+import feign.FeignException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,5 +38,17 @@ public class ExceptionResolver {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<?> feignException(FeignException exception) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        return switch (exception.status()) {
+            case 400 -> new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.BAD_REQUEST);
+            case 401 -> new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.UNAUTHORIZED);
+            case 404 -> new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.NOT_FOUND);
+            default -> new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        };
     }
 }
