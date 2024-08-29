@@ -37,5 +37,5 @@ public class CreateUserRequest {
     String role;
 
     @NotNull
-    AddressDto address;
+    String address;
 }

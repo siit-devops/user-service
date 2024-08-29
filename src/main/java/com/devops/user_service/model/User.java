@@ -23,11 +23,9 @@ public class User {
     private String firstname;
     @Column
     private String email;
-
+    @Column
+    private String address;
 //    @Enumerated(EnumType.STRING)
 //    private Role role;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
-    private Address address;
 }
