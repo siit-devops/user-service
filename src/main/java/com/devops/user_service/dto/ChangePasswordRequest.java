@@ -1,5 +1,6 @@
 package com.devops.user_service.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -9,9 +10,9 @@ import lombok.*;
 @Setter
 @Getter
 public class ChangePasswordRequest {
-    @NotNull
+    @NotBlank(message = "Old password is required!")
     private String oldPassword;
-    @NotNull
+    @NotBlank(message = "New password is required")
     private String newPassword;
 
 }
