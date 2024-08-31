@@ -30,5 +30,5 @@ public class EditUserRequest {
     String lastname;
 
     @NotNull
-    AddressDto address;
+    String address;
 }
