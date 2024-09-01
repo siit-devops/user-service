@@ -6,6 +6,7 @@ import com.devops.user_service.kafka.AccomodationRatingMessage;
 import com.devops.user_service.kafka.HostRatingMessage;
 import com.devops.user_service.kafka.NotificationMessage;
 import com.devops.user_service.kafka.ReservationStatusUpdateMessage;
+import com.devops.user_service.dto.UserDto;
 
 import java.util.UUID;
 
@@ -22,4 +23,6 @@ public interface UserService {
     NotificationMessage checkAccomodationRating(AccomodationRatingMessage message);
 
     NotificationMessage reservationStatusUpdate(ReservationStatusUpdateMessage message);
+
+    UserDto getById(UUID id);
 }

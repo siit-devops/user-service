@@ -2,6 +2,7 @@ package com.devops.user_service.service.impl;
 
 import com.devops.user_service.dto.ChangePasswordRequest;
 import com.devops.user_service.dto.EditUserRequest;
+import com.devops.user_service.dto.UserDto;
 import com.devops.user_service.exception.BadRequestException;
 import com.devops.user_service.exception.NotFoundException;
 import com.devops.user_service.kafka.AccomodationRatingMessage;
@@ -114,6 +115,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getById(UUID id) {
+        return mapper.userToUserDto(userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"))
+        );
+    }
+
+    @Override
     public NotificationMessage reservationStatusUpdate(ReservationStatusUpdateMessage message) {
         User receiver = userRepository.findById(message.getReceiverId()).orElse(null);
         User sender = userRepository.findById(message.getSenderId()).orElse(null);
@@ -145,11 +153,11 @@ public class UserServiceImpl implements UserService {
 
     private Boolean shouldNotify(User receiver, ReservationStatus status) {
         return true;
-//        switch (status) {
-//            case CANCELED -> { return receiver.getNotificationTypes().contains(NotificationType.CANCELED_RESERVATION); }
-//            case WITHDRAWN -> { return receiver.getNotificationTypes().contains(NotificationType.WITHDRAWN_RESERVATION); }
-//            case PENDING -> { return receiver.getNotificationTypes().contains(NotificationType.NEW_RESERVATION); }
-//            default -> { return receiver.getNotificationTypes().contains(NotificationType.RESERVATION_RESPONSE); }
-//        }
+        //        switch (status) {
+        //            case CANCELED -> { return receiver.getNotificationTypes().contains(NotificationType.CANCELED_RESERVATION); }
+        //            case WITHDRAWN -> { return receiver.getNotificationTypes().contains(NotificationType.WITHDRAWN_RESERVATION); }
+        //            case PENDING -> { return receiver.getNotificationTypes().contains(NotificationType.NEW_RESERVATION); }
+        //            default -> { return receiver.getNotificationTypes().contains(NotificationType.RESERVATION_RESPONSE); }
+        //        }
     }
 }

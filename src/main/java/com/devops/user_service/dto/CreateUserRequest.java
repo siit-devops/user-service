@@ -1,6 +1,7 @@
 package com.devops.user_service.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -16,26 +17,26 @@ public class CreateUserRequest {
 
     UUID id;
 
-    @NotNull
+    @NotBlank(message = "Password is required")
     String password;
 
-    @NotNull
+    @NotBlank(message = "Username is required")
     String username;
 
-    @Email
-    @NotNull
+    @Email(message = "Email is not valid")
+    @NotBlank(message = "Email is required")
     String email;
 
-    @NotNull
+    @NotBlank(message = "First name is required")
     String firstname;
 
-    @NotNull
+    @NotBlank(message = "Last name is required")
     String lastname;
 
-    @NotNull
+    @NotBlank(message = "Role is required")
     @Pattern(regexp = "ROLE_HOST|ROLE_GUEST", message = "Role must be either ROLE_HOST or ROLE_GUEST")
     String role;
 
-    @NotNull
-    AddressDto address;
+    @NotBlank(message = "Address is required")
+    String address;
 }

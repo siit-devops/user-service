@@ -99,11 +99,7 @@ public class AuthControllerTest {
                     "email": "testaaaaares@gostic.com",
                     "password": "host123",
                     "role": "ROLE_GUEST",
-                    "address": {
-                        "street": "Ulica 1",
-                        "city": "Novi Sad",
-                        "country": "Serbia"
-                    }
+                    "address": "address"
                 }
                 """;
     }

@@ -141,6 +141,7 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
     private void saveUserToDb(String userId, CreateUserRequest user) {
         user.setId(UUID.fromString(userId));
         var localUser = mapstructMapper.createUserRequestToUser(user);
+        localUser.setRating(0.);
         userRepository.save(localUser);
     }
 }
