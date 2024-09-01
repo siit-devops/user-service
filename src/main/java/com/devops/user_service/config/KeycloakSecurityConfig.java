@@ -47,6 +47,7 @@ public class KeycloakSecurityConfig {
                 .exceptionHandling(eh -> eh.authenticationEntryPoint(restAuthenticationEntryPoint))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/internal/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/users").hasAnyRole("GUEST", "HOST")
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
