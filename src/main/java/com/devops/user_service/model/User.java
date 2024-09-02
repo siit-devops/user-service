@@ -35,7 +35,7 @@ public class User {
     @ElementCollection(targetClass = NotificationType.class, fetch = FetchType.EAGER)
     @CollectionTable
     @Enumerated(EnumType.STRING)
-    List<NotificationType> notificationTypes = new ArrayList<NotificationType>();
+    List<NotificationType> notificationTypes = new ArrayList<>();
     @Column
     private Integer ratingCount = 0;
     @Column
