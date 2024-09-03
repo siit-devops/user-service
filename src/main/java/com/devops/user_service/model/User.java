@@ -33,7 +33,6 @@ public class User {
 //    private Role role;
 
     @ElementCollection(targetClass = NotificationType.class, fetch = FetchType.EAGER)
-    @CollectionTable
     @Enumerated(EnumType.STRING)
     List<NotificationType> notificationTypes = new ArrayList<>();
     @Column
