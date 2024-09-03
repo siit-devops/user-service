@@ -2,6 +2,7 @@ package com.devops.user_service.service;
 
 import com.devops.user_service.dto.ChangePasswordRequest;
 import com.devops.user_service.dto.EditUserRequest;
+import com.devops.user_service.dto.UsersFromReservationDetails;
 import com.devops.user_service.kafka.AccomodationRatingMessage;
 import com.devops.user_service.kafka.HostRatingMessage;
 import com.devops.user_service.kafka.NotificationMessage;
@@ -25,4 +26,6 @@ public interface UserService {
     NotificationMessage reservationStatusUpdate(ReservationStatusUpdateMessage message);
 
     UserDto getById(UUID id);
+
+    UsersFromReservationDetails getUsersForResDetails(UUID guestId, UUID hostId);
 }
