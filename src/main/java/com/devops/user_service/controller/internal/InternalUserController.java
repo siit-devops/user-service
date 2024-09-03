@@ -2,12 +2,10 @@ package com.devops.user_service.controller.internal;
 
 
 import com.devops.user_service.dto.UserDto;
+import com.devops.user_service.dto.UsersFromReservationDetails;
 import com.devops.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -22,4 +20,11 @@ public class InternalUserController {
     UserDto findById(@PathVariable UUID id) {
         return userService.getById(id);
     }
+
+    @GetMapping("/host-and-guest-details")
+    UsersFromReservationDetails getUsersForReservationDetails(@RequestParam UUID guestId, @RequestParam UUID hostId) {
+        return userService.getUsersForResDetails(guestId, hostId);
+    }
+
+
 }
