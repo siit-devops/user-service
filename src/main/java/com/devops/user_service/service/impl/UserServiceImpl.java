@@ -3,6 +3,7 @@ package com.devops.user_service.service.impl;
 import com.devops.user_service.dto.ChangePasswordRequest;
 import com.devops.user_service.dto.EditUserRequest;
 import com.devops.user_service.dto.UserDto;
+import com.devops.user_service.dto.UsersFromReservationDetails;
 import com.devops.user_service.exception.BadRequestException;
 import com.devops.user_service.exception.NotFoundException;
 import com.devops.user_service.kafka.AccomodationRatingMessage;
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
         if (user == null || guest == null) return null;
 
         double newRating = (user.getRatingCount() * user.getRating() + message.getRatingValue() - message.getOldRatingValue())
-                    / (user.getRatingCount() + 1);
+                / (user.getRatingCount() + 1);
         user.setRating(newRating);
         user.setRatingCount(user.getRatingCount() + 1);
 
@@ -122,11 +123,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UsersFromReservationDetails getUsersForResDetails(UUID guestId, UUID hostId) {
+        var host = userRepository.findById(hostId).orElseThrow(() -> new NotFoundException("Host not found"));
+        var guest = userRepository.findById(guestId).orElseThrow(() -> new NotFoundException("Guest not found"));
+
+        return UsersFromReservationDetails.builder()
+                .guestName(guest.getFirstname() + " " + guest.getLastname())
+                .hostName(host.getFirstname() + " " + host.getLastname())
+                .build();
+    }
+
+    @Override
     public NotificationMessage reservationStatusUpdate(ReservationStatusUpdateMessage message) {
         User receiver = userRepository.findById(message.getReceiverId()).orElse(null);
         User sender = userRepository.findById(message.getSenderId()).orElse(null);
 
-        if(receiver == null || sender == null) return null;
+        if (receiver == null || sender == null) return null;
 
         if (!shouldNotify(receiver, message.getStatus())) return null;
 
@@ -139,11 +151,19 @@ public class UserServiceImpl implements UserService {
     }
 
     private NotificationType setNotificationType(ReservationStatus status) {
-        switch (status){
-            case CANCELED -> { return NotificationType.CANCELED_RESERVATION; }
-            case WITHDRAWN -> { return NotificationType.WITHDRAWN_RESERVATION; }
-            case PENDING -> { return NotificationType.NEW_RESERVATION; }
-            default -> { return NotificationType.RESERVATION_RESPONSE; }
+        switch (status) {
+            case CANCELED -> {
+                return NotificationType.CANCELED_RESERVATION;
+            }
+            case WITHDRAWN -> {
+                return NotificationType.WITHDRAWN_RESERVATION;
+            }
+            case PENDING -> {
+                return NotificationType.NEW_RESERVATION;
+            }
+            default -> {
+                return NotificationType.RESERVATION_RESPONSE;
+            }
         }
     }
 

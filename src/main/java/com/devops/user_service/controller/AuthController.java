@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.Response;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @RestController
@@ -47,6 +48,7 @@ public class AuthController {
         AccessTokenResponse accessTokenResponse = null;
         try {
             accessTokenResponse = keycloak.tokenManager().getAccessToken();
+            log.info("Login successfull at: " + LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.OK).body(accessTokenResponse);
         } catch (BadRequestException ex) {
             log.warn("LOGIN error: Invalid account");

@@ -1,11 +1,11 @@
 package com.devops.user_service.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import com.devops.user_service.kafka.enumerations.NotificationType;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -39,4 +39,7 @@ public class CreateUserRequest {
 
     @NotBlank(message = "Address is required")
     String address;
+
+    @NotNull(message = "Notification types are required")
+    List<NotificationType> notificationTypes = new ArrayList<>();
 }
