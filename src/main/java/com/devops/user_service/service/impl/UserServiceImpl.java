@@ -89,10 +89,10 @@ public class UserServiceImpl implements UserService {
 
         return NotificationMessage.builder()
                 .createdAt(LocalDateTime.now())
-                .message(String.format("User '%s' rated you with: %b", guest.getUsername(), message.getRatingValue()))
+                .message(String.format("User '%s' rated you", guest.getUsername()))
                 .processed(!user.getNotificationTypes().contains(NotificationType.HOST_RATING))
                 .notificationType(NotificationType.HOST_RATING)
-                .receiverId(guest.getId())
+                .receiverId(user.getId())
                 .subjectId(user.getId())
                 .build();
     }
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
         return NotificationMessage.builder()
                 .notificationType(NotificationType.ACCOMMODATION_RATING)
-                .message(String.format("Guest '%s' rated your accommodation with %b stars!", guest.getUsername(), message.getRatingValue()))
+                .message(String.format("Guest '%s' rated your accommodation!", guest.getUsername()))
                 .subjectId(message.getAccomodationId())
                 .receiverId(message.getHostId())
                 .processed(!user.getNotificationTypes().contains(NotificationType.ACCOMMODATION_RATING))

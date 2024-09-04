@@ -22,7 +22,7 @@ public class KafkaConsumer {
 
     }
 
-    @KafkaListener(topics = "accomodation-rating",containerFactory = "accomodationRatingListenerContainerFactory")
+    @KafkaListener(topics = "accommodation-rating",containerFactory = "accomodationRatingListenerContainerFactory")
     public void accomodationRating(AccomodationRatingMessage message) {
         NotificationMessage notificationMessage = userService.checkAccomodationRating(message);
 
