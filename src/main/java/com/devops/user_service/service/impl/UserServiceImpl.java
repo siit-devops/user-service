@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -144,10 +145,12 @@ public class UserServiceImpl implements UserService {
 
         return NotificationMessage.builder()
                 .createdAt(LocalDateTime.now())
-                .processed(shouldNotify(receiver, message.getStatus()))
+                .processed(false)
                 .receiverId(message.getReceiverId())
                 .notificationType(setNotificationType(message.getStatus()))
-                .subjectId(message.getReservationId()).message(createMessage(sender, message.getStatus())).build();
+                .subjectId(message.getReservationId())
+                .message(createMessage(sender, message.getStatus()))
+                .build();
     }
 
     private NotificationType setNotificationType(ReservationStatus status) {
@@ -168,16 +171,18 @@ public class UserServiceImpl implements UserService {
     }
 
     private String createMessage(User sender, ReservationStatus status) {
-        return String.format("User '%s' changed reservation status to: %s", sender.getUsername(), status.toString());
+        if (status == ReservationStatus.PENDING) {
+            return String.format("User '%s' made new reservation!", sender.getUsername());
+        }
+        return String.format("User '%s' changed reservation status to: %s", sender.getUsername(), status);
     }
 
     private Boolean shouldNotify(User receiver, ReservationStatus status) {
-        return true;
-        //        switch (status) {
-        //            case CANCELED -> { return receiver.getNotificationTypes().contains(NotificationType.CANCELED_RESERVATION); }
-        //            case WITHDRAWN -> { return receiver.getNotificationTypes().contains(NotificationType.WITHDRAWN_RESERVATION); }
-        //            case PENDING -> { return receiver.getNotificationTypes().contains(NotificationType.NEW_RESERVATION); }
-        //            default -> { return receiver.getNotificationTypes().contains(NotificationType.RESERVATION_RESPONSE); }
-        //        }
+        switch (status) {
+            case CANCELED -> { return receiver.getNotificationTypes().contains(NotificationType.CANCELED_RESERVATION); }
+            case WITHDRAWN -> { return receiver.getNotificationTypes().contains(NotificationType.WITHDRAWN_RESERVATION); }
+            case PENDING -> { return receiver.getNotificationTypes().contains(NotificationType.NEW_RESERVATION); }
+            default -> { return receiver.getNotificationTypes().contains(NotificationType.RESERVATION_RESPONSE); }
+        }
     }
 }
