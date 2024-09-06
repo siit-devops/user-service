@@ -8,6 +8,7 @@ import com.devops.user_service.kafka.HostRatingMessage;
 import com.devops.user_service.kafka.NotificationMessage;
 import com.devops.user_service.kafka.ReservationStatusUpdateMessage;
 import com.devops.user_service.dto.UserDto;
+import com.devops.user_service.model.User;
 
 import java.util.UUID;
 
@@ -28,4 +29,6 @@ public interface UserService {
     UserDto getById(UUID id);
 
     UsersFromReservationDetails getUsersForResDetails(UUID guestId, UUID hostId);
+
+    User findUser(UUID id);
 }

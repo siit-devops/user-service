@@ -2,6 +2,7 @@ package com.devops.user_service.controller;
 
 import com.devops.user_service.dto.ChangePasswordRequest;
 import com.devops.user_service.dto.EditUserRequest;
+import com.devops.user_service.model.User;
 import com.devops.user_service.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,11 @@ public class UserController {
     public ResponseEntity<?> deleteUser(Principal principal) {
         userService.deleteUser(principal.getName());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public User findUser(@PathVariable UUID id) {
+        return userService.findUser(id);
     }
 
 }

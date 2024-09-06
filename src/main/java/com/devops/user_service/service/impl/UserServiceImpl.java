@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
         keycloakService.updateUser(editUserRequest);
         user = mapper.editUserRequestToUser(editUserRequest);
-
+        user.setNotificationTypes(editUserRequest.getNotificationTypes());
         userRepository.save(user);
     }
 
@@ -132,6 +132,11 @@ public class UserServiceImpl implements UserService {
                 .guestName(guest.getFirstname() + " " + guest.getLastname())
                 .hostName(host.getFirstname() + " " + host.getLastname())
                 .build();
+    }
+
+    @Override
+    public User findUser(UUID id) {
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     @Override
