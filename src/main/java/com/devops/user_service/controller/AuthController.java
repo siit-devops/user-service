@@ -34,6 +34,7 @@ public class AuthController {
 
     @PostMapping(value = "/registration")
     public ResponseEntity<Response> addUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
+        log.info("User registration: {} at {}", createUserRequest.getEmail(), LocalDateTime.now());
         var createdResponse = kcAdminClient.createKeycloakUser(createUserRequest);
         return ResponseEntity.status(createdResponse.getStatus()).build();
     }
