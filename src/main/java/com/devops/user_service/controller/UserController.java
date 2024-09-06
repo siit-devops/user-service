@@ -24,6 +24,7 @@ public class UserController {
 
     @PutMapping()
     public ResponseEntity<?> updateUser(Principal principal, @Valid @RequestBody EditUserRequest editUserRequest) {
+        log.info("Updating user: {}", principal.getName());
         userService.updateUser(UUID.fromString(principal.getName()), editUserRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
